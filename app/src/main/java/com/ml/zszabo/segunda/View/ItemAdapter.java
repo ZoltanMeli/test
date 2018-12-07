@@ -11,9 +11,13 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.ml.zszabo.segunda.Model.Item;
 import com.ml.zszabo.segunda.R;
+import com.ml.zszabo.segunda.Util.FrescoFailListenerController;
 
+import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +49,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
-        String url = "http://mla-s1-p.mlstatic.com/925527-MLA28634170301_112018-I.jpg";// items.get(i).getImageURL();
-        itemViewHolder.draweeView.setImageURI(url);
+        String url = items.get(i).getImageURL();
+        Uri uri = Uri.parse(url);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(itemViewHolder.draweeView.getController())
+                .setControllerListener(new FrescoFailListenerController())
+                .build();
+        itemViewHolder.draweeView.setController(controller);
         itemViewHolder.description.setText(items.get(i).getTitle());
-        itemViewHolder.priceTag.setText(items.get(i).getPriceTag());
+        itemViewHolder.priceTag.setText("$".concat(items.get(i).getPriceTag()));
     }
 
     @Override
@@ -63,9 +76,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         public ItemViewHolder(View view) {
             super(view);
-            description = (TextView) view.findViewById(R.id.item_description);
-            priceTag = (TextView) view.findViewById(R.id.item_price);
-            draweeView = (SimpleDraweeView) view.findViewById(R.id.item_drawee);
+            description = view.findViewById(R.id.item_description);
+            priceTag =  view.findViewById(R.id.item_price);
+            draweeView = view.findViewById(R.id.item_drawee);
         }
     }
 

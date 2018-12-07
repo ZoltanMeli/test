@@ -34,17 +34,10 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.ItemC
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        presenter.getItems().enqueue(new Callback<SearchResponse>() {
+        presenter.getItems(new ListPresenter.OnItemsReceivedListener() {
             @Override
-            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                if (response.isSuccessful()) {
-                    adapter.addItems(response.body().getResults());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SearchResponse> call, Throwable t) {
-
+            public void onItemsReceived(List<Item> items) {
+                adapter.addItems(items);
             }
         });
 
