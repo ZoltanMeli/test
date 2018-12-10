@@ -3,8 +3,13 @@ package com.ml.zszabo.segunda.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Item {
 
+    @SerializedName("id")
+    @Expose
+    private String id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -14,6 +19,11 @@ public class Item {
     @SerializedName("thumbnail")
     @Expose
     private String imageURL;
+    @SerializedName("pictures")
+    private List<Picture> pictures;
+    @SerializedName("permalink")
+    private String link;
+    private String description;
 
     public String getImageURL() {
         return imageURL;
@@ -28,7 +38,26 @@ public class Item {
     }
 
     public String getPriceTag() {
-        return String.valueOf(price);
+        return "$" + String.valueOf(price).replaceAll("[//.][0]+$","");
     }
 
+    public List<Picture> getPictures() {
+        return pictures;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String  getDescription() {
+        return description == null ? "" : description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLink() {
+        return link;
+    }
 }

@@ -1,5 +1,6 @@
 package com.ml.zszabo.segunda.View;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +46,8 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.ItemC
 
     @Override
     public void onItemClick(Item item) {
-
+        Intent intent = new Intent(this, ItemDetailActivity.class);
+        intent.putExtra(ItemDetailActivity.DETAIL_INTENT_ITEM_ID_KEY, item.getId());
+        startActivity(intent);
     }
 }

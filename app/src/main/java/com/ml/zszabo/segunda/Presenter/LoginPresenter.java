@@ -1,6 +1,7 @@
 package com.ml.zszabo.segunda.Presenter;
 
 import android.os.Handler;
+import android.text.TextUtils;
 
 import com.ml.zszabo.segunda.Model.User;
 import com.ml.zszabo.segunda.Util.EventUtils;
@@ -41,5 +42,14 @@ public class LoginPresenter {
                 EventBus.getDefault().post(new EventUtils.LoginEvent(EventUtils.LoginEvent.LOGIN_SUCCESSFULL));
             }
         }, 500);
+    }
+
+    public boolean isPasswordValid() {
+        return user != null && user.getPassword()!=null && (user.getPassword().length() > 4 || user.getPassword().length() == 0);
+    }
+
+
+    public boolean isEmailValid() {
+        return user != null && user.getEmail().contains("@");
     }
 }

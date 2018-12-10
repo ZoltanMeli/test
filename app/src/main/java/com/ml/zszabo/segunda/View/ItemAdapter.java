@@ -48,7 +48,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
+    public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, final int i) {
         String url = items.get(i).getImageURL();
         Uri uri = Uri.parse(url);
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
@@ -61,7 +61,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 .build();
         itemViewHolder.draweeView.setController(controller);
         itemViewHolder.description.setText(items.get(i).getTitle());
-        itemViewHolder.priceTag.setText("$".concat(items.get(i).getPriceTag()));
+        itemViewHolder.priceTag.setText(items.get(i).getPriceTag());
+        itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(items.get(i));
+            }
+        });
     }
 
     @Override
