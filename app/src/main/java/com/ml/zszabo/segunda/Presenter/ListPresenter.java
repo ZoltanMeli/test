@@ -12,8 +12,8 @@ import retrofit2.Response;
 
 public class ListPresenter {
 
-    public void getItems(final OnItemsReceivedListener onItemsReceivedListener) {
-        API.getApi().searchItem("Barny").enqueue(new Callback<SearchResponse>() {
+    public void getItems(String query, final OnItemsReceivedListener onItemsReceivedListener) {
+        API.getApi().searchItem(query).enqueue(new Callback<SearchResponse>() {
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 onItemsReceivedListener.onItemsReceived(response.body().getResults());

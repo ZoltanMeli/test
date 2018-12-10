@@ -27,14 +27,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private Context context;
     private ItemClickListener listener;
 
-    public ItemAdapter(ItemClickListener itemClickListener) {
+    ItemAdapter(ItemClickListener itemClickListener) {
         this.context = (Context) itemClickListener;
         this.listener = itemClickListener;
     }
 
-    public void addItems(List<Item> items) {
-        if (this.items == null) this.items = new ArrayList<>();
-        this.items.addAll(items);
+    void setItems(List<Item> items) {
+        this.items = items;
         notifyDataSetChanged();
     }
 
@@ -76,11 +75,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView description, priceTag;
         SimpleDraweeView draweeView;
 
-        public ItemViewHolder(View view) {
+        ItemViewHolder(View view) {
             super(view);
             description = view.findViewById(R.id.item_description);
             priceTag =  view.findViewById(R.id.item_price);

@@ -18,19 +18,37 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".View.LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.ListActivity" />
+        <activity android:name=".View.ListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter android:label="@string/filter_view_meli">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="http"
+                    android:host="www.fakemeli.com"
+                    android:pathPrefix="/search" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
+            <intent-filter android:label="@string/filter_view_meli">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "example://gizmos” -->
+                <data android:scheme="meli"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".View.ItemDetailActivity"
             android:label="@string/title_activity_item_detail"
-            android:parentActivityName=".View.ListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".View.ListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ml.zszabo.segunda.View.ListActivity" />

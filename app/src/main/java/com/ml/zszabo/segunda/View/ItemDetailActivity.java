@@ -2,20 +2,20 @@ package com.ml.zszabo.segunda.View;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ml.zszabo.segunda.Model.Item;
 import com.ml.zszabo.segunda.Presenter.ItemDetailPresenter;
 import com.ml.zszabo.segunda.R;
@@ -24,13 +24,16 @@ import com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator;
 public class ItemDetailActivity extends AppCompatActivity {
 
     public final static String DETAIL_INTENT_ITEM_ID_KEY = "detailkey";
+    private static final String RECYCLER_STATE_KEY = "recyclerposition";
+    private static final String SAVED_BUNDLE_ITEM_KEY = "savedbundle";
 
-    private Toolbar toolbar;
     private Item item;
     private RecyclerView recyclerView;
     private IndefinitePagerIndicator indicator;
     private TextView title, priceTag, description;
     private Button button;
+    private LinearLayoutManager linearLayoutManager;
+    private Bundle mBundleRecyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,41 +46,34 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
 
         findViews();
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        getSupportActionBar().setTitle("");
 
         final ItemDetailPresenter presenter = new ItemDetailPresenter();
-        presenter.getItem(itemID, new ItemDetailPresenter.OnItemReceivedListener() {
-            @Override
-            public void onItemReceived(Item item) {
-                ItemDetailActivity.this.item = item;
-                populateUI();
-                presenter.getItemDescription(itemID, new ItemDetailPresenter.OnItemDescriptionReceivedListener() {
+        if (savedInstanceState == null) {
+            presenter.getItem(itemID, new ItemDetailPresenter.OnItemReceivedListener() {
+                @Override
+                public void onItemReceived(Item item) {
+                    ItemDetailActivity.this.item = item;
+                    populateUI();
+                    presenter.getItemDescription(itemID, new ItemDetailPresenter.OnItemDescriptionReceivedListener() {
 
-                    @Override
-                    public void onItemDescriptionReceived(String description) {
-                        ItemDetailActivity.this.item.setDescription(description);
-                        populateUI();
-                    }
-                });
-            }
-        });
-
+                        @Override
+                        public void onItemDescriptionReceived(String description) {
+                            ItemDetailActivity.this.item.setDescription(description);
+                            populateUI();
+                        }
+                    });
+                }
+            });
+        } else {
+            String itemJson = savedInstanceState.getString(SAVED_BUNDLE_ITEM_KEY);
+            ItemDetailActivity.this.item = new Gson().fromJson(itemJson, Item.class);
+            populateUI();
+        }
     }
 
     private void findViews() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.item_detail_recyclerview);
         indicator = findViewById(R.id.item_detail_recyclerview_pager_indicator);
         title = findViewById(R.id.item_detail_title);
@@ -87,11 +83,9 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        toolbar.setTitle(item.getTitle());
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        getSupportActionBar().setTitle(item.getTitle());
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
         PicturesRecyclerAdapter adapter = new PicturesRecyclerAdapter(this, item.getPictures());
         recyclerView.setAdapter(adapter);
         try {
@@ -130,4 +124,33 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(SAVED_BUNDLE_ITEM_KEY, new Gson().toJson(item));
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        // save RecyclerView state
+        mBundleRecyclerViewState = new Bundle();
+        Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(RECYCLER_STATE_KEY, listState);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // restore RecyclerView state
+        if (mBundleRecyclerViewState != null) {
+            Parcelable listState = mBundleRecyclerViewState.getParcelable(RECYCLER_STATE_KEY);
+            recyclerView.getLayoutManager().onRestoreInstanceState(listState);
+        }
+    }
 }
