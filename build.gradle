@@ -19,11 +19,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'net.researchgate.release' version '2.6.0' //para generar releases
-    id "com.jfrog.bintray" version "1.8.1" //para subir a bintray
-}
-
 allprojects {
     repositories {
         google()
