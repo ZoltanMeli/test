@@ -18,7 +18,6 @@ import com.ml.zszabo.segunda.R;
 import com.ml.zszabo.segunda.Util.FrescoFailListenerController;
 
 import android.net.Uri;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -79,7 +78,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         TextView description, priceTag;
         SimpleDraweeView draweeView;
 
-        ItemViewHolder(View view) {
+        public ItemViewHolder(View view) {
             super(view);
             description = view.findViewById(R.id.item_description);
             priceTag =  view.findViewById(R.id.item_price);

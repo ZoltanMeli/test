@@ -34,11 +34,13 @@ public class ItemDetailActivity extends AppCompatActivity {
     private Button button;
     private LinearLayoutManager linearLayoutManager;
     private Bundle mBundleRecyclerViewState;
+    private Button sellerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
+
         final String itemID = getIntent().getStringExtra(DETAIL_INTENT_ITEM_ID_KEY);
         if (itemID == null) {
             Toast.makeText(this.getApplicationContext(), "Item ID invalid", Toast.LENGTH_SHORT).show();
@@ -46,8 +48,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
 
         findViews();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
 
         final ItemDetailPresenter presenter = new ItemDetailPresenter();
         if (savedInstanceState == null) {
@@ -71,6 +71,12 @@ public class ItemDetailActivity extends AppCompatActivity {
             ItemDetailActivity.this.item = new Gson().fromJson(itemJson, Item.class);
             populateUI();
         }
+
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
+
     }
 
     private void findViews() {
@@ -80,10 +86,11 @@ public class ItemDetailActivity extends AppCompatActivity {
         priceTag = findViewById(R.id.item_detail_pricetag);
         description = findViewById(R.id.item_detail_description);
         button = findViewById(R.id.item_detail_button);
+        sellerButton = findViewById(R.id.item_detail_seller_button);
     }
 
     private void populateUI() {
-        getSupportActionBar().setTitle(item.getTitle());
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(item.getTitle());
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         PicturesRecyclerAdapter adapter = new PicturesRecyclerAdapter(this, item.getPictures());
@@ -106,6 +113,26 @@ public class ItemDetailActivity extends AppCompatActivity {
                 startMeliIntent();
             }
         });
+        sellerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSellerActivity();
+            }
+        });
+    }
+
+    private void startSellerActivity() {
+        try {
+            Uri uri = Uri.parse("ml://vervendedor/" + item.getSellerId());
+            try {
+                Intent myIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(myIntent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(this, "oops", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "oops", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startMeliIntent() {

@@ -23,6 +23,17 @@ public class Item {
     private List<Picture> pictures;
     @SerializedName("permalink")
     private String link;
+    @SerializedName("seller_id")
+    private String sellerId;
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
     private String description;
 
     public String getImageURL() {

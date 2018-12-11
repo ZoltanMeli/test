@@ -25,7 +25,8 @@
         app:layout_constraintTop_toTopOf="@id/activity_list_fake_toolbar"
         app:layout_constraintBottom_toBottomOf="@id/activity_list_fake_toolbar"
         app:layout_constraintRight_toRightOf="@id/activity_list_fake_toolbar"
-        android:src="@drawable/menu_ic_search"/>
+        android:src="@drawable/menu_ic_search"
+        android:focusable="true" />
 
     <EditText
         android:id="@+id/activity_list_edittext"
@@ -34,7 +35,7 @@
         android:maxLines="1"
         android:imeOptions="actionSearch"
         android:inputType="text"
-        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         app:layout_constraintLeft_toLeftOf="@id/activity_list_fake_toolbar"
         app:layout_constraintTop_toTopOf="@id/activity_list_fake_toolbar"
         app:layout_constraintBottom_toBottomOf="@id/activity_list_fake_toolbar"

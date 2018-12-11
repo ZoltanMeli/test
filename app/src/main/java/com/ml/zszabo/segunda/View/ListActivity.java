@@ -2,14 +2,19 @@ package com.ml.zszabo.segunda.View;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -41,6 +46,7 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.ItemC
     private List<Item> items;
     private EditText editText;
     private ListPresenter presenter;
+    private boolean orientationLand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,13 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.ItemC
 
         adapter = new ItemAdapter(this);
         recyclerView = findViewById(R.id.activity_list_recycleView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        if (display.getRotation() == Surface.ROTATION_0) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }
         recyclerView.setAdapter(adapter);
 
         editText = findViewById(R.id.activity_list_edittext);
@@ -91,6 +103,8 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.ItemC
                 getItems(presenter);
             }
         });
+
+        hideKeyboard();
 
     }
 
@@ -157,5 +171,17 @@ public class ListActivity extends AppCompatActivity implements ItemAdapter.ItemC
             view = new View(this);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        if (display.getRotation() == Surface.ROTATION_0) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }
+        super.onConfigurationChanged(newConfig);
     }
 }

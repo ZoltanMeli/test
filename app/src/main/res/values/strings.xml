@@ -15,4 +15,5 @@
     <string name="title_activity_item_detail">ItemDetailActivity</string>
     <string name="goto_meli">Ir a Meli</string>
     <string name="filter_view_meli">Fake MeLi</string>
+    <string name="view_seller">Ver Vendedor</string>
 </resources>

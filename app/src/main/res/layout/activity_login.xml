@@ -65,10 +65,10 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
+            <com.mercadolibre.android.ui.widgets.MeliButton
                 android:id="@+id/email_sign_in_button"
-                style="@style/Meli.ButtonStyle"
-                android:text="@string/action_sign_in" />
+                android:text="@string/action_sign_in"
+                style="@style/MLButton.Primary"/>
 
         </LinearLayout>
     </ScrollView>
